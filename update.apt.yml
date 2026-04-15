@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        dpkg_options: 'force-confold,force-confdef'
+      register: apt_output
+
+    - name: Upgrade all packages to the latest version
+      apt:
+        upgrade: dist
+        dpkg_options: 'force-confold,force-confdef'
+      register: apt_output
+
+    - name: Display upgrade results
+      ansible.builtin.debug:
+        var: apt_output.stdout_lines
+
+    - name: Remove unused dependencies
+      apt:
+        autoremove: yes
