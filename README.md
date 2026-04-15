@@ -1,5 +1,9 @@
 # Avid Tech Enthusiast - Homelab Owner and Developer
+## Ansible Playbooks and Deployment
+In this repository, I have built 3 yaml files which are coded for Ubuntu or Debian based APT updates via automation in ansible and Semaphore using Task and Schedules.  These are created using the standard anbible commands and will show status and updates and outcomes of the application command in the window using Semaphore or CLI.  Feel free to copy these for your homelab as a template. 
+Over the next 6 months I will be advancing and integrating other playbooks to automate the management of Ubuntu or Debian based machines in my homelab. These can be used in your Homelab too! 
 
+## Homelabs:
 Homelabas are used for Tech Enthusiasts who enjoy automating technology in their homes.  This could involved Raspberry PI units, variety of Network Applicances, Small PC's, Servers and more. 
 
 ## About Me:
