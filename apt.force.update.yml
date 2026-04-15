@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        dpkg_options: 'force-confold,force-confdef'
+      register: apt_output
+    
+    - name: Upgrade all packages bypassing phasing
+      apt:
+        upgrade: yes
+        update_cache: no
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      vars:
+        ansible_apt_args: "-o APT::Get::Always-Include-Phased-Updates=true"
+      register: apt_output
+      
+    - name: Display upgrade results
+      ansible.builtin.debug:
+        var: apt_output.stdout_lines
+
+    - name: Remove unused dependencies
+      apt:
+        autoremove: yes
