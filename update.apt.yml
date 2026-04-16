@@ -10,7 +10,7 @@
       ignore_unreachable: true
       register: conn_check
     - name: Group Reachable Hosts
-      ansible.builtin.group.by:
+      ansible.builtin.group_by:
         key: reachable_hosts
       when: conn_check is succeeded
       
