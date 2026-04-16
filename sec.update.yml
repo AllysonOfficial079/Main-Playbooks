@@ -1,6 +1,8 @@
 ---
 - name: Apply Security Updates to Ubuntu
   hosts: all
+  gather_facts: false
+  ignore_unreachable: true
   become: true
   tasks:
     - name: Update apt cache and upgrade security packages
