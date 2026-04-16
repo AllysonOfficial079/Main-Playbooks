@@ -1,13 +1,13 @@
 ---
 # Play 1: Identify all online hosts
 - hosts: all
-  gather_facts: true
+  gather_facts: false
+  ignore_unreachable: true
   become: true
   tasks:
     - name: Check Connectivity
       ansible.builtin.wait_for_connection:
         timeout: 5
-      ignore_unreachable: true
       register: conn_check
     - name: Group Reachable Hosts
       ansible.builtin.group_by:
