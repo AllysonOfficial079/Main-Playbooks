@@ -16,6 +16,7 @@
       
 # Play 2 Run All Tasks on reachable Hosts only
 - hosts: reachable_hosts
+  ignore_unreachable: true
   become: true
   tasks:
     - name: Execute on only online hosts
