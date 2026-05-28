@@ -13,10 +13,10 @@ Spending alot of time working on my homelab and this repository and it's files a
 ## Current Build
 * Network: Xfinity - 2.5GB Fiber to ONT
 * ONT -> Ubiquiti USG 4 Pro Appliance -> US8 POE 60W -> Brocade ICX4630 24 Port -> RBK753 Orbi + MK73 Nighthawk + * AmplifiHD Ubiquiti Wifi
-* HP 600 G3 - i7 16GB RAM 256GB SSD - Docker + Portainer + HomeAssistant + CameraUI + Glances + HomePage + NetData
+* Lenovo Thinkcentre M720T - i7 8th Gen 16GB RAM 256GB SSD - Proxmox PVE - Docker + Portainer - Ansible - AdGuard Home + Glances + Homarr + NetData
 * HP 405 G6 - Ryzen 5 4650 32GB RAM 512GB SSD - Unifi Network OS Controller + Observium SNMP Monitoring
-* HP 405 G8 - Ryzen 5 5650 32GB RAM 512GB SSD - Proxmox 9.2.1 - Ansible/Semaphore UI(VM) + Docker DEV Environment
 * Design and Control PC - Asus Pro B550 Wifi+ AX, AMD Ryzen 5 5600X, 32GB DDR4 RAM, WD+Samsung+TForce SSDs Total:    4TB, EVGA RTX3060Ti
+* Design and Studio PC - Dell Precision 7530 i7 9th Gen, 32GB DDR4, nVidia P2000 Quadro GPU, 256GB NVME SSD Samsung Evo 980
 * NAS: WDPR4100 with 4 Drives 8TB Storage + WD MyCloud 2TB (backups)
 
 Pull requests are welcome. For major changes, please open an issue first
