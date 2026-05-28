@@ -25,7 +25,8 @@ to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
 ## Screenshots of Semaphore Using Playbooks:
-<img src="images/Screenshot_20260527_230218.png" alt="App Screenshot" width="600">
+<img src="images/Screenshot_20260527_230530.png" alt="Semaphore Dashboard" width="800">
+<img src="images/Screenshot_20260527_230218.png" alt="Semaphore Task Screenshot" width="800">
 
 
 
