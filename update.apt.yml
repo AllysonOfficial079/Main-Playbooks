@@ -1,43 +1,65 @@
 ---
-# Play 1: Identify all online hosts
-- hosts: all
+# ============================================================
+# APT Update - Online Hosts Only
+# ============================================================
+
+- name: Update APT on Online Hosts
+  hosts: all
   gather_facts: false
   ignore_unreachable: true
   become: true
+
   tasks:
-    - name: Check Connectivity
+
+    # --------------------------------------------------------
+    # Check Connectivity
+    # --------------------------------------------------------
+
+    - name: Check host connectivity
       ansible.builtin.wait_for_connection:
-        timeout: 5
+        timeout: 10
+        connect_timeout: 5
       register: conn_check
-    - name: Group Reachable Hosts
-      ansible.builtin.group_by:
-        key: reachable_hosts
+      ignore_errors: true
+      become: false
+
+    - name: Report online host
+      ansible.builtin.debug:
+        msg: "ONLINE - {{ inventory_hostname }} will be updated."
       when: conn_check is succeeded
-      
-# Play 2 Run All Tasks on reachable Hosts only
-- hosts: reachable_hosts
-  ignore_unreachable: true
-  become: true
-  tasks:
-    - name: Execute on only online hosts
+
+    - name: Report offline host
       ansible.builtin.debug:
-        msg: "This host is online"
-    - name: Update apt package cache
-      apt:
-        update_cache: yes
-        dpkg_options: 'force-confold,force-confdef'
-      register: apt_output
+        msg: "OFFLINE - {{ inventory_hostname }} will be skipped."
+      when: conn_check is failed
 
-    - name: Upgrade all packages to the latest version
-      apt:
-        upgrade: dist
-        dpkg_options: 'force-confold,force-confdef'
-      register: apt_output
+    # --------------------------------------------------------
+    # APT UPDATE
+    # --------------------------------------------------------
 
-    - name: Display upgrade results
+    - name: Update APT package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 0
+        force_apt_get: true
+        dpkg_options:
+          - force-confold
+          - force-confdef
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      register: apt_update
+      when: conn_check is succeeded
+
+    # --------------------------------------------------------
+    # RESULTS
+    # --------------------------------------------------------
+
+    - name: Display update results
       ansible.builtin.debug:
-        var: apt_output.stdout_lines
-
-    - name: Remove unused dependencies
-      apt:
-        autoremove: yes
+        msg:
+          - "=========================================="
+          - "APT UPDATE COMPLETE"
+          - "Host: {{ inventory_hostname }}"
+          - "Repository cache updated: {{ apt_update.changed | default(false) }}"
+          - "=========================================="
+      when: conn_check is succeeded
