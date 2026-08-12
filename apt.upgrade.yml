@@ -1,127 +1,39 @@
----
-# Ansible Playbook: Force APT Upgrade on All Online Hosts
-# Designed for use with Semaphore
-
-# ============================================================
-# Play 1: Identify Online/Reachable Hosts
-# ============================================================
-
-- name: Identify Online Hosts
-  hosts: all
-  gather_facts: false
-  ignore_unreachable: true
-  become: true
-
-  tasks:
-
-    - name: Check host connectivity
-      ansible.builtin.wait_for_connection:
-        timeout: 5
-        connect_timeout: 5
-        sleep: 1
-      register: conn_check
-      ignore_errors: true
-
-    - name: Add reachable hosts to dynamic group
-      ansible.builtin.group_by:
-        key: reachable_hosts
-      when: conn_check is succeeded
-
-    - name: Report unreachable hosts
-      ansible.builtin.debug:
-        msg: "Host {{ inventory_hostname }} is unreachable and will be skipped."
-      when: conn_check is failed
-
-
-# ============================================================
-# Play 2: Update and Upgrade All Reachable Hosts
-# ============================================================
-
-- name: Force APT Upgrade on Online Hosts
+- name: Perform APT Upgrade on Online Hosts
   hosts: reachable_hosts
-  gather_facts: true
-  ignore_unreachable: true
+  gather_facts: false
   become: true
+  ignore_unreachable: true
 
   tasks:
 
-    - name: Display target host
-      ansible.builtin.debug:
-        msg: "Starting APT upgrade on {{ inventory_hostname }}"
-
-    # --------------------------------------------------------
-    # Update APT Repository Cache
-    # --------------------------------------------------------
-
-    - name: Update APT package cache
+    - name: Update APT cache
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 0
-        dpkg_options:
-          - force-confold
-          - force-confdef
-      register: apt_update
+        force_apt_get: true
       environment:
         DEBIAN_FRONTEND: noninteractive
 
-    # --------------------------------------------------------
-    # Upgrade All Packages
-    # --------------------------------------------------------
-
-    - name: Force standard apt upgrade
+    - name: Upgrade all packages
       ansible.builtin.apt:
         upgrade: yes
+        force_apt_get: true
         dpkg_options:
           - force-confold
           - force-confdef
-        force_apt_get: true
-      register: apt_upgrade
       environment:
         DEBIAN_FRONTEND: noninteractive
-
-    # --------------------------------------------------------
-    # Remove Unused Packages
-    # --------------------------------------------------------
 
     - name: Remove unused dependencies
       ansible.builtin.apt:
         autoremove: true
-        purge: false
-      register: apt_autoremove
+        force_apt_get: true
       environment:
         DEBIAN_FRONTEND: noninteractive
 
-    # --------------------------------------------------------
-    # Clean APT Cache
-    # --------------------------------------------------------
-
-    - name: Clean APT package cache
+    - name: Clean APT cache
       ansible.builtin.apt:
         autoclean: true
-      register: apt_clean
+        force_apt_get: true
       environment:
         DEBIAN_FRONTEND: noninteractive
-
-    # --------------------------------------------------------
-    # Display Results
-    # --------------------------------------------------------
-
-    - name: Display APT upgrade results
-      ansible.builtin.debug:
-        msg:
-          - "Host: {{ inventory_hostname }}"
-          - "APT cache updated: {{ apt_update.changed | default(false) }}"
-          - "Packages upgraded: {{ apt_upgrade.changed | default(false) }}"
-          - "Packages removed: {{ apt_autoremove.changed | default(false) }}"
-          - "APT cache cleaned: {{ apt_clean.changed | default(false) }}"
-
-    - name: Display upgraded package details
-      ansible.builtin.debug:
-        var: apt_upgrade.stdout_lines
-      when:
-        - apt_upgrade.stdout_lines is defined
-        - apt_upgrade.stdout_lines | length > 0
-
-    - name: Display completion message
-      ansible.builtin.debug:
-        msg: "APT upgrade completed successfully on {{ inventory_hostname }}"
