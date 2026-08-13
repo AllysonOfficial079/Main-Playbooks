@@ -161,3 +161,23 @@
 
           </body>
           </html>
+          
+  - name: Identify reports older than 30 days
+      ansible.builtin.find:
+        paths: "{{ health_report_dir }}"
+        patterns: "homelab-health-check-*.html"
+        age: "30d"
+        recurse: false
+      register: old_reports
+
+    - name: Remove reports older than 30 days
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ old_reports.files }}"
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Report cleanup summary
+      ansible.builtin.debug:
+        msg: "Removed {{ old_reports.files | length }} report(s) older than 30 days from {{ health_report_dir }}"
