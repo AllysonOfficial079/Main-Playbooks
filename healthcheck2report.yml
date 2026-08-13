@@ -161,8 +161,8 @@
 
           </body>
           </html>
-          
-  - name: Identify reports older than 30 days
+
+    - name: Identify reports older than 30 days
       ansible.builtin.find:
         paths: "{{ health_report_dir }}"
         patterns: "homelab-health-check-*.html"
