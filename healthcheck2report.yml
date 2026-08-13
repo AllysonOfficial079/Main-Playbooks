@@ -89,7 +89,7 @@
 
   vars:
     # Point this at a path that survives container restarts (a mounted volume)
-    health_report_dir: /var/lib/semaphore/reports
+    health_report_dir: /snap/semaphore/reports
     health_report_file: "homelab-health-check-{{ now().strftime('%Y%m%d-%H%M%S') }}.html"
 
   tasks:
