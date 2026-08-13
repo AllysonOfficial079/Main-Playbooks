@@ -1,7 +1,7 @@
 ---
 - name: Homelab Pre-Maintenance Health Check
   hosts: all
-  gather_facts: true
+  gather_facts: false
   become: true
   ignore_unreachable: true
 
