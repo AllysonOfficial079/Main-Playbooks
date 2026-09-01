@@ -3,19 +3,15 @@
 # Ubuntu Security / System Updates
 # Online Hosts Only
 # ============================================================
-
 - name: Apply Ubuntu Updates
   hosts: all
   gather_facts: false
   ignore_unreachable: true
   become: true
-
   tasks:
-
     # --------------------------------------------------------
     # Connectivity
     # --------------------------------------------------------
-
     - name: Check host connectivity
       ansible.builtin.wait_for_connection:
         timeout: 10
@@ -37,15 +33,12 @@
     # --------------------------------------------------------
     # Update and Upgrade
     # --------------------------------------------------------
-
     - name: Update APT cache and upgrade packages
       ansible.builtin.apt:
         update_cache: true
         upgrade: dist
         force_apt_get: true
-        dpkg_options:
-          - force-confold
-          - force-confdef
+        dpkg_options: 'force-confdef,force-confold'
       environment:
         DEBIAN_FRONTEND: noninteractive
       register: apt_upgrade
@@ -54,7 +47,6 @@
     # --------------------------------------------------------
     # Check for Reboot
     # --------------------------------------------------------
-
     - name: Check if reboot is required
       ansible.builtin.stat:
         path: /var/run/reboot-required
@@ -64,7 +56,6 @@
     # --------------------------------------------------------
     # Reboot
     # --------------------------------------------------------
-
     - name: Reboot host if required
       ansible.builtin.reboot:
         msg: "Reboot initiated by Ansible after Ubuntu updates."
@@ -80,7 +71,6 @@
     # --------------------------------------------------------
     # Results
     # --------------------------------------------------------
-
     - name: Display update results
       ansible.builtin.debug:
         msg:
